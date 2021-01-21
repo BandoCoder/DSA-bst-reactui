@@ -1,6 +1,6 @@
 import "./App.css";
 import React from "react";
-import aSorted from "./STOREsorted";
+import data from "./STORE";
 
 let steps = 0;
 
@@ -13,15 +13,13 @@ class App extends React.Component {
   }
 
   lSearch = (value) => {
-    let resString;
-    for (let i = 0; i < aSorted.length; i++) {
-      if (aSorted[i] === value) {
-        resString = `Found ${value} after ${i} steps`;
-      } else {
-        resString = `Not Found! after ${i} searches`;
+    for (let i = 0; i < data.length; i++) {
+      if (data[i] === value) {
+        return `Found ${value} after ${i} steps using linear search`;
+      } else if (data.length === i + 1) {
+        return `Not Found after ${i} steps using linear search`;
       }
     }
-    return resString;
   };
 
   bSearch = (arr, value, start, end) => {
@@ -29,20 +27,22 @@ class App extends React.Component {
     end = end === undefined ? arr.length : end;
 
     if (start > end) {
-      return -1;
+      return `Value Not Found after ${steps} tries using binary search`;
     }
 
     const index = Math.floor((start + end) / 2);
     const item = arr[index];
 
     if (item === value) {
-      return `Value ${value} found after ${steps} tries`;
+      return `Value ${value} found after ${steps} tries using binary search`;
     } else if (item < value) {
       steps++;
       return this.bSearch(arr, value, index + 1, end);
     } else if (item > value) {
       steps++;
       return this.bSearch(arr, value, start, index - 1);
+    } else {
+      return `Value Not Found after ${steps} tries using binary search`;
     }
   };
 
@@ -56,8 +56,11 @@ class App extends React.Component {
 
   handleSubmitB = (e) => {
     e.preventDefault();
+    steps = 0;
+    let aSorted = data.sort((a, b) => a - b);
     const valueB = e.target.textbox2.value;
-    const resultB = this.bSearch(aSorted, valueB);
+    const resultB = this.bSearch(aSorted, Number(valueB));
+    console.log(resultB);
 
     this.setState({ message: resultB });
   };
